@@ -13,7 +13,7 @@ import {
 import { CreateCatDto, ListAllEntities, UpdateCatDto } from './dto';
 
 @Controller('cats')
-export class CatsController {
+export class CatController {
   @Get()
   findAll(@Query() query: ListAllEntities) {
     return `This action returns all cats (limit: ${query.limit} items)`;
