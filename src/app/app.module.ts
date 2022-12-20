@@ -7,21 +7,31 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { MongooseModule } from '@nestjs/mongoose';
-
-const mongo_username = "adesso"
-const mongo_password = "okr2022"
-const mongo_database_name = "chat_app"
-const MONGO_URI = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.izwr5.mongodb.net/${mongo_database_name}?retryWrites=true&w=majority`
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
-  imports: [MongooseModule.forRoot(MONGO_URI), AdminModule, UserModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'), // Loaded from .ENV
+      }),
+    }),
+    AdminModule,
+    UserModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

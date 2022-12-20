@@ -12,7 +12,7 @@ export function globalMiddleware(req: Request, res: Response, next: NextFunction
 }
 
 async function bootstrap() {
-  const PORT = 3000;
+  const PORT = process.env.PORT;
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(globalMiddleware)
