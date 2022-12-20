@@ -6,9 +6,14 @@ import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { MongooseModule } from '@nestjs/mongoose';
+
+const mongo_username = "adesso"
+const mongo_password = "okr2022"
+const MONGO_URI = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.izwr5.mongodb.net/?retryWrites=true&w=majority`
 
 @Module({
-  imports: [AdminModule, UserModule, AuthModule],
+  imports: [MongooseModule.forRoot(MONGO_URI), AdminModule, UserModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

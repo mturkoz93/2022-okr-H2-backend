@@ -8,8 +8,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() payload: CreateUserDto) {
-    return this.userService.create(payload);
+  createUser(@Body() payload: CreateUserDto) {
+    return this.userService.createUser(payload.username, payload.password);
   }
 
   @Get()
@@ -18,8 +18,9 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findOne(@Param('id') id: string, @Body() payload: any) {
+    return this.userService.findOne(payload.username);
+    // return this.userService.findOne(+id);
   }
 
   @Patch(':id')
