@@ -25,12 +25,14 @@ export class RolesGuard implements CanActivate {
     ]);
     console.log('requiredRoles', requiredRoles)
 
+    // Bu endpointe hiçbir role tanımlanmadıysa yani public ise kullanıcı yoluna devam etsin.
     if (!requiredRoles) {
       return true;
     }
 
-    const { user } = context.switchToHttp().getRequest();
-    console.log('userr', user)
+    const request = context.switchToHttp().getRequest();
+    console.log('request', request)
+    const { user } = request
     return requiredRoles.some((role) => user.roles?.includes(role));
 
   }
