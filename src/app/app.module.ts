@@ -10,7 +10,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 const mongo_username = "adesso"
 const mongo_password = "okr2022"
-const MONGO_URI = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.izwr5.mongodb.net/?retryWrites=true&w=majority`
+const mongo_database_name = "chat_app"
+const MONGO_URI = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.izwr5.mongodb.net/${mongo_database_name}?retryWrites=true&w=majority`
 
 @Module({
   imports: [MongooseModule.forRoot(MONGO_URI), AdminModule, UserModule, AuthModule],
