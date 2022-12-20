@@ -8,10 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('2022-okr-H2')
+    .setDescription('The 2022-okr-H2 API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('2022-okr-H2')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
@@ -19,6 +19,7 @@ async function bootstrap() {
   
   await app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`)
+    console.log(`Swagger is running you can visit http://localhost:${PORT}/api to see the Swagger interface.`)
   })
 }
 bootstrap();
