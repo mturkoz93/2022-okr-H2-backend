@@ -1,8 +1,9 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NextFunction } from 'express';
 import { AppModule } from './app/app.module';
+import { RolesGuard } from './app/guard/roles.guard';
 
 export function globalMiddleware(req: Request, res: Response, next: NextFunction) {
   console.log('global Middleware')
@@ -15,6 +16,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(globalMiddleware)
+  app.useGlobalGuards(new RolesGuard(new Reflector()));
 
 
   // SWAGGER

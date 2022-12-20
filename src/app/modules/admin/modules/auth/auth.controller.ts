@@ -6,7 +6,6 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 
 const baseDomainUrl = DomainNames.ADMIN
 
-@UseGuards(RolesGuard)
 @Controller(`${baseDomainUrl}/auth`)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
