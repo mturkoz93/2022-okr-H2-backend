@@ -16,24 +16,27 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.getUser({ username });
-    console.log('user', user, password)
 
     if (!user) return null;
+
     const passwordValid = await bcrypt.compare(password, user.password);
-    console.log('passwordValid', passwordValid)
+
     if (!user) {
       throw new NotAcceptableException('could not find the user');
     }
+
     if (user && passwordValid) {
       return user;
     }
+
     return null;
   }
 
   login(user: any) {
-    const payload = { username: user.username, sub: user._id };
+    const payload = { username: user.username, _id: user._id };
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, {secret: "test"}),
     };
   }
 

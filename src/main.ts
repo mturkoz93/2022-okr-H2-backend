@@ -5,17 +5,22 @@ import { NextFunction } from 'express';
 import { AppModule } from './app/app.module';
 import { RolesGuard } from './app/guard/roles.guard';
 
-export function globalMiddleware(req: Request, res: Response, next: NextFunction) {
-  console.log('global Middleware')
+export function globalMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  console.log('global Middleware');
 
-  next()
+  next();
 }
 
 async function bootstrap() {
   const PORT = process.env.PORT;
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.use(globalMiddleware)
+  app.enableCors();
+  app.use(globalMiddleware);
   app.useGlobalGuards(new RolesGuard(new Reflector()));
 
 
@@ -29,11 +34,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  
   await app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
-    console.log(`Swagger is running you can visit http://localhost:${PORT}/api to see the Swagger interface.`)
-  })
+    console.log(`App listening on port ${PORT}`);
+    console.log(
+      `Swagger is running you can visit http://localhost:${PORT}/api to see the Swagger interface.\n\n`,
+    );
+  });
 }
 
 bootstrap();

@@ -4,7 +4,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/app/decorator/roles.decorator';
 import { Role } from 'src/app/common/enums/role.enum';
-import { RolesGuard } from 'src/app/guard/roles.guard';
 
 @Controller('admin/users')
 export class UserController {

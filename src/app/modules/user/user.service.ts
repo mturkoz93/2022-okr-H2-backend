@@ -25,8 +25,8 @@ export class UserService {
     return `This action returns all users`;
   }
 
-  findOne(username: string): any {
-    return this.userModel.find({ username });
+  findOne(userId: string): any {
+    return this.userModel.find({ _id: userId }).select("-password");
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

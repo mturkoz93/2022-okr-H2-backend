@@ -33,7 +33,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Get('protected')
   getHello(@Request() req: any) {
     return req.user;
