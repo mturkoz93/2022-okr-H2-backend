@@ -18,6 +18,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginDTO } from './dto/login.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { SignupDTO } from './dto/signup.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -52,12 +53,11 @@ export class AuthController {
 
   @Post('signup')
   async createUser(
-    @Body('password') password: string,
-    @Body('username') username: string,
+    @Body() payload: SignupDTO,
   ) {
     const saltOrRounds = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-    const result = await this.usersService.createUser(username, hashedPassword);
+    const hashedPassword = await bcrypt.hash(payload.password, saltOrRounds);
+    const result = await this.usersService.createUser(payload.username, hashedPassword);
     return result;
   }
   /* @Post('signup')

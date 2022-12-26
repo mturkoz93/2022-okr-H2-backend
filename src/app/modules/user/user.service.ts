@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserDocument } from './users.model';
+import { UserDocument } from '../../models/users.model';
 
 @Injectable()
 export class UserService {
@@ -14,6 +14,7 @@ export class UserService {
     return this.userModel.create({
       username,
       password,
+      // tags: ['']
     });
   }
 
@@ -26,7 +27,7 @@ export class UserService {
   }
 
   findOne(userId: string): any {
-    return this.userModel.findOne({ _id: userId }).select("-password");
+    return this.userModel.findOne({ _id: userId }).select('-password');
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -35,5 +36,9 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  getUserTokens(userId: string): any {
+    return this.userModel.find({ _id: userId }).populate('tokens').exec();
   }
 }

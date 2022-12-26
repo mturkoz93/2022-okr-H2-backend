@@ -33,4 +33,9 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
+
+  @Get(':user_id/tokens')
+  getUserTokens(@Param('user_id') user_id: string) {
+    return this.userService.getUserTokens(user_id);
+  }
 }
