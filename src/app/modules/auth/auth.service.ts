@@ -1,6 +1,5 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { LoginAuthDto } from './dto/login-auth.dto';
 import { LogoutAuthDto } from './dto/logout-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ResetPasswordAuthDto } from './dto/resetPassword-auth.dto';
@@ -36,7 +35,8 @@ export class AuthService {
     const payload = { username: user.username, _id: user._id };
 
     return {
-      access_token: this.jwtService.sign(payload, {secret: "test"}),
+      user: payload,
+      accessToken: this.jwtService.sign(payload),
     };
   }
 

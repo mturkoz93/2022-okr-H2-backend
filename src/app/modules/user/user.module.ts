@@ -4,8 +4,6 @@ import { UserController } from './user.controller';
 import { UserMiddleware } from 'src/app/common/middleware/user.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './users.model';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [

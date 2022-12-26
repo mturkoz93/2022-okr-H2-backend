@@ -1,4 +1,3 @@
-import { LocalAuthGuard } from './local-auth.guard';
 import {
   Controller,
   Get,
@@ -13,11 +12,12 @@ import {
 import { AuthService } from './auth.service';
 import { LogoutAuthDto } from './dto/logout-auth.dto';
 import { ResetPasswordAuthDto } from './dto/resetPassword-auth.dto';
-import { AuthenticatedGuard } from './authenticated.guard';
 import { UserService } from '../user/user.service';
 
 import * as bcrypt from 'bcrypt';
 import { AuthGuard } from '@nestjs/passport';
+import { LoginDTO } from './dto/login.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -27,16 +27,22 @@ export class AuthController {
   ) {}
 
   // Kimlik doğrulamasını zorunlu kılmak için UseGuards kullanıldı
-  @UseGuards(AuthGuard('local'))
   @Post('login')
-  login(@Request() req: any) {
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('local'))
+  login(@Request() req: any, @Body() payload: LoginDTO) {
+    console.log(payload)
     return this.authService.login(req.user);
   }
 
+  @Get('hello')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get('protected')
   getHello(@Request() req: any) {
-    return req.user;
+    return {
+      user: req.user,
+      message: 'Hello Mello.. :)'
+    };
   }
 
   @Post('logout')

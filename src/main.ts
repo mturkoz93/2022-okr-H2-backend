@@ -10,7 +10,7 @@ export function globalMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  console.log('global Middleware');
+  console.log('global MIDDLEWARE');
 
   next();
 }
@@ -30,7 +30,9 @@ async function bootstrap() {
     .setDescription('The 2022-okr-H2 API description')
     .setVersion('1.0')
     .addTag('2022-okr-H2')
+    .addBearerAuth()
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
