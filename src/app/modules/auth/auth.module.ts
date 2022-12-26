@@ -11,11 +11,12 @@ import { UserSchema } from '../../models/users.model';
 import { UserService } from '../user/user.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenSchema } from '../../models/tokens.model';
+import { TagSchema } from '../../models/tags.model';
 
 @Module({
   imports: [
     UserModule,
-    MongooseModule.forFeature([{ name: 'user', schema: UserSchema }, { name: 'token', schema: TokenSchema }]),
+    MongooseModule.forFeature([{ name: 'user', schema: UserSchema }, { name: 'token', schema: TokenSchema }, { name: 'tag', schema: TagSchema }]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     
     JwtModule.registerAsync({

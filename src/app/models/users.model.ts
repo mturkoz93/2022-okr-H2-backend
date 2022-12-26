@@ -28,7 +28,7 @@ export class User {
   @Prop()
   updatedBy?: string;
 
-  @Prop([{ type: [Types.ObjectId], ref: 'tag' }])
+  @Prop({ type: [Types.ObjectId], ref: 'tag' })
   tags!: Tag[];
 
   @Prop()

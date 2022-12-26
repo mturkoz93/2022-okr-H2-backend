@@ -1,32 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { now, Document, SchemaTypes, Types } from 'mongoose';
-import { User } from './users.model';
+import { Document } from 'mongoose';
 
 export type TagDocument = Tag & Document;
 
 /**
  * timestamps: true ise createdAt ve updatedAt alanları otomatik oluşur.
  */
-@Schema()
+@Schema({ timestamps: true, collection: 'tags' })
 export class Tag {
+  @Prop({ required: true })
+  name!: string;
 
-  @Prop([{ type: Types.ObjectId, ref: 'user', required: true }])
-  user_id!: User;
-
-  @Prop()
-  accessToken: string;
-
-  @Prop()
-  refreshToken: string;
-
-  @Prop()
-  createdAt: Date; // You can use Date here.
-
-  @Prop()
-  expiresAt: Date;
-
-  @Prop()
-  isValid: boolean;
+  @Prop({ default: true })
+  isActive: boolean;
 }
 
 export const TagSchema = SchemaFactory.createForClass(Tag);
