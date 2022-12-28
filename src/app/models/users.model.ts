@@ -45,6 +45,9 @@ export class User {
 
   @Prop()
   avatar?: string;
+  
+  @Prop()
+  level?: string;
 
   /* @Prop({ default: now() })
   createdAt: Date;
