@@ -57,7 +57,7 @@ export class AuthController {
   ) {
     const saltOrRounds = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(payload.password, saltOrRounds);
-    const result = await this.usersService.createUser(payload.username, hashedPassword);
+    const result = await this.usersService.createUser({ ...payload, password: hashedPassword });
     return result;
   }
   /* @Post('signup')

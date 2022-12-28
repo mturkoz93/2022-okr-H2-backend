@@ -17,10 +17,13 @@ export class User {
   password!: string;
 
   @Prop()
+  gender?: number;
+
+  @Prop()
   email?: string;
 
   @Prop()
-  description?: string;
+  about?: string;
 
   @Prop()
   createdBy?: string;
@@ -36,6 +39,12 @@ export class User {
 
   @Prop({ type: [Types.ObjectId], ref: 'token' })
   tokens: Token[];
+
+  @Prop({ default: true })
+  accept: boolean;
+
+  @Prop()
+  avatar?: string;
 
   /* @Prop({ default: now() })
   createdAt: Date;

@@ -12,13 +12,18 @@ export class UserService {
     @InjectModel('tag') private readonly tagModel: Model<TagDocument>,
   ) {}
 
-  async createUser(username: string, password: string): Promise<any> {
+  async createUser(payload: any): Promise<any> {
     const tags = await this.tagModel.find().limit(3)
 
     return this.userModel.create({
-      username,
-      password,
+      username: payload.username,
+      password: payload.password,
       tags: tags?.map((tag) => tag._id),
+      about: payload.about || '',
+      accept: payload.accept,
+      avatar: payload.avatar || '',
+      gender: payload.gender,
+      level: payload.level || '',
     });
   }
 
@@ -28,7 +33,7 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userModel.find().sort({'updatedAt': -1}).select('-password -tokens -__v').populate('tags', '_id name');
   }
 
   findOne(userId: string): any {
