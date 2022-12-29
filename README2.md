@@ -17,3 +17,6 @@
 
 # socket.io
 - npm i socket.io
+
+# nestjs websocket
+- npm i --save @nestjs/websockets @nestjs/platform-socket.io

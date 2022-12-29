@@ -47,10 +47,10 @@ export class UserService {
   }
 
   async findOne(userId: string) {
-    const user = await this.userModel.findOne({ _id: userId }).select('-password -createdAt -updatedAt -tokens -__v').populate('tags', '_id name').exec()
+    const user = await this.userModel.findOne({ $or:[ {'_id':userId }, {'username':userId} ]}).select('-password -createdAt -updatedAt -tokens -__v').populate('tags', '_id name').exec()
 
     if(!user) {
-      throw new Error("User Bulunamadı!");
+      throw new Error("Kullanıcı bulunamadı!");
       
     }
 

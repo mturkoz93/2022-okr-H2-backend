@@ -5,7 +5,6 @@ import { NextFunction } from 'express';
 import { AppModule } from './app/app.module';
 import { RolesGuard } from './app/guard/roles.guard';
 
-const { Server } = require('socket.io');
 
 export function globalMiddleware(
   req: Request,
@@ -44,11 +43,10 @@ async function bootstrap() {
     );
   });
 
-  /* const io = Socket(server, {
-    transports: ['websocket', 'xhr-polling']
-  }); */
+  /* SocketService.CreateSocketServer(server)
+  SocketService.onConnect() */
 
-  const io = new Server(server);
+  /* const io = new Server(server);
 
   io.on('connection', (socket) => {
     console.log('socket bağlandı')
@@ -57,7 +55,7 @@ async function bootstrap() {
       console.log('socket working at the backend', msg);
       io.sockets.emit('message', msg);
     });
-  });
+  }); */
 }
 
 bootstrap();
