@@ -2,6 +2,7 @@ import { Token } from './tokens.model';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, Document, SchemaTypes, Types } from 'mongoose';
 import { Tag } from './tags.model';
+import { Room } from './room.model';
 
 export type UserDocument = User & Document;
 
@@ -12,6 +13,9 @@ export type UserDocument = User & Document;
 export class User {
   @Prop({ required: true })
   username!: string;
+
+  @Prop()
+  clientId: string;
 
   @Prop({ required: true })
   password!: string;
@@ -45,6 +49,12 @@ export class User {
 
   @Prop()
   avatar?: string;
+  
+  @Prop()
+  level?: string;
+
+  @Prop({type: [{type: Types.ObjectId, ref: 'Room'}]})
+  joinedRooms?: Room[];
 
   /* @Prop({ default: now() })
   createdAt: Date;

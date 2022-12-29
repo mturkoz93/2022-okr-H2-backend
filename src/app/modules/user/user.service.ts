@@ -32,12 +32,29 @@ export class UserService {
     return this.userModel.findOne(query);
   }
 
+  search(payload: any) {
+    // await this.userModel.updateMany({"accept": true}, {"$set":{"level": 'sr'}}, {"multi": true, "upsert": true});
+
+    return this.userModel.find({
+      username: { $regex: '.*' + payload.search + '.*' },
+      gender: { $in: +payload.gender === 0 ? [1, 2] : +payload.gender },
+      level: payload?.levels?.length ? { $in: payload.levels } : { $regex: '.*' + '' + '.*' },
+    }).sort({'updatedAt': -1}).select('-password -tokens -__v').populate('tags', '_id name');
+  }
+
   findAll() {
     return this.userModel.find().sort({'updatedAt': -1}).select('-password -tokens -__v').populate('tags', '_id name');
   }
 
-  findOne(userId: string): any {
-    return this.userModel.findOne({ _id: userId }).select('-password -createdAt -updatedAt -tokens -__v').populate('tags', '_id name');
+  async findOne(userId: string) {
+    const user = await this.userModel.findOne({ $or:[ {'_id':userId }, {'username':userId} ]}).select('-password -createdAt -updatedAt -tokens -__v').populate('tags', '_id name').exec()
+
+    if(!user) {
+      throw new Error("Kullanıcı bulunamadı!");
+      
+    }
+
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
