@@ -13,6 +13,11 @@ export class UserController {
     return this.userService.createUser(payload);
   } */
 
+  @Post('search')
+  search(@Body() payload: any) {
+    return this.userService.search(payload);
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();

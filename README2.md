@@ -14,3 +14,9 @@
 - npm install --save @nestjs/jwt passport-jwt
 - npm install --save-dev @types/passport-jwt
 - npm i --save @nestjs/config
+
+# socket.io
+- npm i socket.io
+
+# nestjs websocket
+- npm i --save @nestjs/websockets @nestjs/platform-socket.io

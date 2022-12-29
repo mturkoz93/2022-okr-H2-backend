@@ -1,3 +1,4 @@
+import { ChatGateway } from './gateways/chat.gateway';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from 'src/app/common/middleware/logger.middleware';
 import { AppController } from './app.controller';
@@ -8,7 +9,10 @@ import { AdminModule } from './modules/admin/admin.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TagModule } from './modules/tag/tag.module';
+import { RoomModule } from './modules/room/room.module';
 import configuration from './config/configuration';
+import { UserSchema } from './models/users.model';
+import { RoomSchema } from './models/room.model';
 
 @Module({
   imports: [
@@ -23,13 +27,15 @@ import configuration from './config/configuration';
         uri: configService.get<string>('MONGODB_URI'), // Loaded from .ENV
       }),
     }),
+    MongooseModule.forFeature([{ name: 'user', schema: UserSchema }, { name: 'room', schema: RoomSchema }]),
     AdminModule,
     UserModule,
     AuthModule,
     TagModule,
+    RoomModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
