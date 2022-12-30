@@ -13,8 +13,9 @@ import { RoomModule } from './modules/room/room.module';
 import configuration from './config/configuration';
 import { UserSchema } from './models/users.model';
 import { RoomSchema } from './models/room.model';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -29,7 +30,10 @@ import { AllExceptionsFilter } from './filters/all-exceptions.filter';
         uri: configService.get<string>('MONGODB_URI'), // Loaded from .ENV
       }),
     }),
-    MongooseModule.forFeature([{ name: 'user', schema: UserSchema }, { name: 'room', schema: RoomSchema }]),
+    MongooseModule.forFeature([
+      { name: 'user', schema: UserSchema },
+      { name: 'room', schema: RoomSchema },
+    ]),
     AdminModule,
     UserModule,
     AuthModule,
@@ -37,10 +41,18 @@ import { AllExceptionsFilter } from './filters/all-exceptions.filter';
     RoomModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway,  {
-    provide: APP_FILTER,
-    useClass: AllExceptionsFilter,
-  },],
+  providers: [
+    AppService,
+    ChatGateway,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

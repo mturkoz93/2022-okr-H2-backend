@@ -5,7 +5,7 @@ import { DomainNames } from '../enums/22OKRH2.enum';
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('logger ' + DomainNames.MIDDLEWARE);
+    // console.log('logger ' + DomainNames.MIDDLEWARE);
     next();
   }
 }

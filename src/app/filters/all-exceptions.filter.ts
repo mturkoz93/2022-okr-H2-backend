@@ -24,15 +24,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
       return response.status(httpStatus).json({
         statusCode: httpStatus,
-        message: message || error,
+        message: httpStatus === 500 ? 'Sunucu hatası!' : (message || error),
         timestamp: new Date().toISOString(),
         path: request.url,
       });
     } else {
-      console.log(err.message)
+      console.log(err.message + 'msutafa')
       return response.status(httpStatus).json({
         statusCode: httpStatus,
-        message: err.message,
+        message: httpStatus === 500 ? 'Sunucu hatası!' : err.message,
         timestamp: new Date().toISOString(),
         path: request.url,
       });

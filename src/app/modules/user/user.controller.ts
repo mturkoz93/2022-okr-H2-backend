@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+// import { LoggingInterceptor } from 'src/app/interceptors/logging.interceptor';
 
+
+// @UseInterceptors(LoggingInterceptor)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -17,7 +20,7 @@ export class UserController {
   search(@Body() payload: any) {
     return this.userService.search(payload);
   }
-
+  
   @Get()
   findAll() {
     return this.userService.findAll();

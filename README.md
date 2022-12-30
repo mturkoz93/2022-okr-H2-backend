@@ -32,6 +32,8 @@ Uygulamaya dair bazı özellikler;
 - Mongodb(mongoose orm)
 - Şifreler bcrypt ile hashlenerek tutulmuştur.
 - Custom Decorator, middleware, guard yapısı ve websocket gateway uygulanmıştır.
+- Exception filter(global error handler) eklenmiştir.
+- Loglama ve Output formatı için interceptor kullanılmıştır.
 - Swagger ile api dökümantasyonu yapılmıştır.
 
 
