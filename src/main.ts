@@ -5,6 +5,8 @@ import { NextFunction } from 'express';
 import { AppModule } from './app/app.module';
 import { AllExceptionsFilter } from './app/filters/all-exceptions.filter';
 import { RolesGuard } from './app/guard/roles.guard';
+// import { LoggingInterceptor } from './app/interceptors/logging.interceptor';
+import { OutputFormatInterceptor } from './app/interceptors/output-format.interceptor';
 
 
 export function globalMiddleware(
@@ -12,7 +14,7 @@ export function globalMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  console.log('global MIDDLEWARE');
+  // console.log('global MIDDLEWARE');
 
   next();
 }
@@ -27,6 +29,10 @@ async function bootstrap() {
   app.use(globalMiddleware);
   app.useGlobalGuards(new RolesGuard(new Reflector()));
   app.useGlobalFilters(new AllExceptionsFilter());
+  // app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalInterceptors(
+    new OutputFormatInterceptor(),
+  );
 
   // SWAGGER
   const config = new DocumentBuilder()
