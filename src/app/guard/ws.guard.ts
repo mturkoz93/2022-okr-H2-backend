@@ -14,9 +14,8 @@ export class WsGuard implements CanActivate {
   canActivate(
     context: any,
   ): boolean | any | Promise<boolean | any> | Observable<boolean | any> {
-    const bearerToken = context.args[0].handshake.query.accessToken || null;
-    console.log('433', bearerToken)
     try {
+      const bearerToken = context.args[0].handshake.query.accessToken || null;
       // const decoded = verifyToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhha2vEsSIsIl9pZCI6IjYzYWJhYjAzMzk2ZGY4MzQxOGRmMmZlYyIsImlhdCI6MTY3MjI5OTY3NSwiZXhwIjoxNjc3NDgzNjc1fQ.k0asy3AfhhZChvHNHdDQlj4TPFDCD6XJDgSQaTBUMVc", process.env.JWT_PUBLIC_KEY) as any;
       const decoded = this.jwtService.verify(bearerToken)
 

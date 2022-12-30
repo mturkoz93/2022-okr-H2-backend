@@ -29,7 +29,7 @@ export class ChatGateway {
   }
 
   async handleConnection(client: Socket) {
-    console.log('Connect', client.id)
+    console.log('Connectted: ', client.id)
     const user = await this.userModel.findOne({clientId: client.id});
     if (user) {
       this.server.emit('users-changed', {user: user.username, event: 'left'});
@@ -53,15 +53,15 @@ export class ChatGateway {
   joinedGeneralChat(client: Socket): void {
     const username = client["user"].username
     const id = client["user"]._id
-    console.log(client["user"].username);
-    console.log(client["user"]._id);
+    /* console.log(client["user"].username);
+    console.log(client["user"]._id); */
     this.server.emit('general_chat', {text: `${username} katıldı.`, username, _id: id, type: 'join' });
   }
 
   @UseGuards(WsGuard)
   @SubscribeMessage('send_message_general_chat')
   sendMessageGeneralChat(client: Socket, data): void {
-    console.log('client', client["user"])
+    // console.log('client', client["user"])
     const username = client["user"].username
     const id = client["user"]._id
 
@@ -72,7 +72,7 @@ export class ChatGateway {
   @UseGuards(WsGuard)
   @SubscribeMessage('message')
   handleMessage(@MessageBody() message: string, payload: any): void {
-    console.log(message);
+    // console.log(message);
     this.server.emit('message', message);
   }
 
