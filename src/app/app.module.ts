@@ -13,6 +13,8 @@ import { RoomModule } from './modules/room/room.module';
 import configuration from './config/configuration';
 import { UserSchema } from './models/users.model';
 import { RoomSchema } from './models/room.model';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 
 @Module({
   imports: [
@@ -35,7 +37,10 @@ import { RoomSchema } from './models/room.model';
     RoomModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService, ChatGateway,  {
+    provide: APP_FILTER,
+    useClass: AllExceptionsFilter,
+  },],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
