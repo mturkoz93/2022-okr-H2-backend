@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NextFunction } from 'express';
 import { AppModule } from './app/app.module';
+import { AllExceptionsFilter } from './app/filters/all-exceptions.filter';
 import { RolesGuard } from './app/guard/roles.guard';
 
 
@@ -21,8 +22,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
+
+  // Globals
   app.use(globalMiddleware);
   app.useGlobalGuards(new RolesGuard(new Reflector()));
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // SWAGGER
   const config = new DocumentBuilder()

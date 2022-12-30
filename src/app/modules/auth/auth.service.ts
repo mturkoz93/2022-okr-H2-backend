@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LogoutAuthDto } from './dto/logout-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -22,7 +22,10 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.getUser({ username });
 
-    if (!user) return null;
+    if (!user) {
+      throw new UnauthorizedException("Böyle bir kullanıcı bulunamadı!");
+      // return null
+    };
 
     const passwordValid = await bcrypt.compare(password, user.password);
 
@@ -38,28 +41,33 @@ export class AuthService {
   }
 
   async login(user: any) {
-    // Payload
-    const payload = { username: user.username, _id: user._id };
+    try {
+      // Payload
+      const payload = { username: user.username, _id: user._id };
 
-    // JWT sign method
-    const accessToken = this.jwtService.sign(payload)
+      // JWT sign method
+      const accessToken = this.jwtService.sign(payload)
 
-    // Create Token
-    const createdToken = await this.tokenModel.create({
-      user_id: user._id,
-      accessToken: accessToken
-    })
+      // Create Token
+      const createdToken = await this.tokenModel.create({
+        user_id: user._id,
+        accessToken: accessToken
+      })
 
-    // Update User
-    await this.userModel.findByIdAndUpdate({ _id: user._id }, {
-      $push: { tokens: createdToken._id }
-    }, { new: true })
+      // Update User
+      await this.userModel.findByIdAndUpdate({ _id: user._id }, {
+        $push: { tokens: createdToken._id }
+      }, { new: true })
 
 
-    return {
-      user: payload,
-      accessToken,
-    };
+      return {
+        user: payload,
+        accessToken,
+      };
+    } catch (error) {
+      throw new Error("hoop");
+      
+    }
   }
 
   logout(payload: LogoutAuthDto) {
