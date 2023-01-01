@@ -35,6 +35,7 @@ Uygulamaya dair bazı özellikler;
 - Exception filter(global error handler) eklenmiştir.
 - Loglama ve Output formatı için interceptor kullanılmıştır.
 - Swagger ile api dökümantasyonu yapılmıştır.
+- Sentry (error monitoring)
 
 
 ## Installation
