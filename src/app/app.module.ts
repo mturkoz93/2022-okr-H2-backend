@@ -16,6 +16,8 @@ import { RoomSchema } from './models/room.model';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { SentryModule } from '@ntegral/nestjs-sentry';
+const SENTRY_DSN = "https://1ab0a5e19db64b02a66a929298bee953@o4504431183855616.ingest.sentry.io/4504431276654593"
 
 @Module({
   imports: [
@@ -34,6 +36,13 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
       { name: 'user', schema: UserSchema },
       { name: 'room', schema: RoomSchema },
     ]),
+    SentryModule.forRoot({
+      dsn: `${SENTRY_DSN}`,
+      debug: true,
+      environment: process.env.NODE_ENV,
+      release: null, // must create a release in sentry.io dashboard
+      // logLevel: LogLevel.Debug //based on sentry.io loglevel //
+    }),
     AdminModule,
     UserModule,
     AuthModule,

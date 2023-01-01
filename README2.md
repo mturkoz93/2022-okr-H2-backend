@@ -20,3 +20,8 @@
 
 # nestjs websocket
 - npm i --save @nestjs/websockets @nestjs/platform-socket.io
+
+# sentry
+- npm i @ntegral/nestjs-sentry
+- npm i @sentry/minimal
+- npm i @sentry/types
