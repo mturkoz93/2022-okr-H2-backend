@@ -1,5 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
+import * as Sentry from '@sentry/minimal';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -19,20 +20,37 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const errResponse: string | any = err.getResponse();
       const { message, error } = errResponse instanceof Object ? errResponse : { message: errResponse, error: null };
 
+      try {
+        sendErrorToSentry(err)
+      } catch (error) {
+        
+      }
+      
+      const errorMessage = httpStatus === 500 ? 'Sunucu hatası!' : (message || error)
       // Log
-      console.log(message || error)
+      console.log(errorMessage)
 
       return response.status(httpStatus).json({
         statusCode: httpStatus,
-        message: httpStatus === 500 ? 'Sunucu hatası!' : (message || error),
+        message: errorMessage,
         timestamp: new Date().toISOString(),
         path: request.url,
       });
     } else {
-      console.log(err.message + 'msutafa')
+      
+      try {
+        sendErrorToSentry(err)
+      } catch (error) {
+        
+      }
+      
+      const errorMessage = httpStatus === 500 ? 'Sunucu hatası!' : err.message
+      // Log
+      console.log(errorMessage)
+
       return response.status(httpStatus).json({
         statusCode: httpStatus,
-        message: httpStatus === 500 ? 'Sunucu hatası!' : err.message,
+        message: errorMessage,
         timestamp: new Date().toISOString(),
         path: request.url,
       });
@@ -47,4 +65,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         path: request.url,
       }); */
   }
+}
+
+function sendErrorToSentry(err) {
+  Sentry.captureException(err);
 }

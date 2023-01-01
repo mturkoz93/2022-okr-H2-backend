@@ -8,6 +8,8 @@ import { RolesGuard } from './app/guard/roles.guard';
 // import { LoggingInterceptor } from './app/interceptors/logging.interceptor';
 import { OutputFormatInterceptor } from './app/interceptors/output-format.interceptor';
 
+// import * as Sentry from '@sentry/node';
+
 
 export function globalMiddleware(
   req: Request,
@@ -31,8 +33,18 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   // app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalInterceptors(
+    // new SentryInterceptor(),
     new OutputFormatInterceptor(),
   );
+
+
+  /* const SENTRY_DSN = "https://1ab0a5e19db64b02a66a929298bee953@o4504431183855616.ingest.sentry.io/4504431276654593"
+
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    // ...
+  }); */
+  
 
   // SWAGGER
   const config = new DocumentBuilder()
