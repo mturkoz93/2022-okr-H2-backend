@@ -17,9 +17,21 @@ export class RoomController {
     // return this.roomService.getRooms()
   }
 
-  @Get('user/:userId')
+  @Get(':roomId')
+  @UseGuards(AuthGuard('jwt'))
+  async getRoomDetail(@Query('q') q, @Param('roomId') roomId: string) {
+    return await this.roomService.getRoomDetail(roomId)
+  }
+
+  @Get('users/:userId')
   @UseGuards(AuthGuard('jwt'))
   async getUserRooms(@Query('q') q, @Param('userId') userId: string) {
     return await this.roomService.getUserRooms(userId)
+  }
+
+  @Get(':roomId/users/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getUserRoom(@Query('q') q, @Param('userId') userId: string, @Param('userId') roomId: string) {
+    return await this.roomService.getUserRoom(userId, roomId)
   }
 }

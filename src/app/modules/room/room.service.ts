@@ -50,4 +50,19 @@ export class RoomService {
 
    return room
   }
+
+  async getRoomDetail(roomId: any) {
+    const room = await this.roomModel.findOne({
+      _id: roomId,
+    })
+    .populate({ // participants içerisinde bulunan tags'lerin ilişkili olduğu tablodan bilgilerini alır
+      path: 'participants',
+      populate: {
+        path: 'tags',
+        model: 'tag'
+      } 
+   }).exec() as any;
+
+   return room
+  }
 }

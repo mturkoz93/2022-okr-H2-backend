@@ -31,6 +31,7 @@ export class Room {
         receiverId: { type: Types.ObjectId, ref: 'user', required: true },
         status: { type: Number },
         createdAt: { type: Date, default: Date.now },
+        type: { type: String, default: 'message' },
       },
     ],
   })

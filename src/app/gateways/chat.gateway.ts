@@ -87,6 +87,7 @@ export class ChatGateway {
             senderId: id,
             receiverId: selectedUser._id,
             status: 1,
+            type: 'join'
           },
         ],
         participants: [id, selectedUser._id],
@@ -137,7 +138,7 @@ export class ChatGateway {
     this.server.emit('received_message_from_general_chat', {
       text: data.text,
       username,
-      ownerId: id,
+      senderId: id,
       type: 'message',
       roomId,
       receiverId,
@@ -177,6 +178,7 @@ export class ChatGateway {
             senderId: id,
             receiverId: receiverId,
             status: 1,
+            type: 'message'
           },
         },
         $set:{ updatedAt: Date.now }
@@ -188,7 +190,7 @@ export class ChatGateway {
     this.server.to(roomName).emit('receive_private_message', {
       text: text,
       username,
-      ownerId: id,
+      senderId: id,
       type: 'message',
       roomId,
       receiverId,
@@ -236,13 +238,5 @@ export class ChatGateway {
       .to(data.roomId)
       .emit('users-changed', { user: user.username, event: 'left' });
     client.leave(data.roomId);
-  }
-
-  @SubscribeMessage('add-message')
-  async addMessage(client: Socket, message: any) {
-    message.owner = await this.userModel.findOne({ clientId: client.id });
-    message.created = new Date();
-    /* message = await this.messagesModel.create(message);
-    this.server.in(message.room as string).emit('message', message); */
   }
 }
