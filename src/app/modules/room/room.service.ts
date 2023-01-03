@@ -1,26 +1,33 @@
+import { RoomDocument } from './../../models/room.model';
 import { Injectable } from '@nestjs/common';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class RoomService {
-  create(createRoomDto: CreateRoomDto) {
-    return 'This action adds a new room';
-  }
+  constructor(
+    @InjectModel('room') private readonly roomModel: Model<RoomDocument>,
+  ) {}
 
-  findAll() {
-    return `This action returns all room`;
-  }
+  async getUserRooms(userId: any) {
+    return await this.roomModel.find({
+      participants: { $in: userId }
+    })
+    .slice('messages', -1)
+    .populate({ 
+      path: 'participants',
+      populate: {
+        path: 'tags',
+        model: 'tag'
+      } 
+   }).populate("messages.receiverId").populate("messages.senderId").exec() as any;
 
-  findOne(id: number) {
-    return `This action returns a #${id} room`;
-  }
-
-  update(id: number, updateRoomDto: UpdateRoomDto) {
-    return `This action updates a #${id} room`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} room`;
+    /* console.log(rooms)
+    return rooms?.map((room: any) => {
+      return {
+        ...room,
+        participantIds: room.participants.map(item => item._id)
+      }
+    }) */
   }
 }
