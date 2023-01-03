@@ -94,7 +94,7 @@ export class ChatGateway {
     const id = client['user']._id;
     /* console.log(client["user"].username);
     console.log(client["user"]._id); */
-    this.server.emit('general_chat_welcome', {
+    this.server.emit('entered_to_general_chat', {
       text: `${username} katıldı.`,
       username,
       _id: id,
@@ -112,7 +112,43 @@ export class ChatGateway {
     const { text, roomId, receiverId } = data
     console.log({text, roomId, receiverId})
 
-    this.server.emit('receive_message_general_chat', {
+    this.server.emit('received_message_from_general_chat', {
+      text: data.text,
+      username,
+      ownerId: id,
+      type: 'message',
+      roomId,
+      receiverId
+    });
+  }
+
+  @UseGuards(WsGuard)
+  @SubscribeMessage('join_to_room')
+  joinToRoom(client: Socket, data): void {
+    const username = client['user'].username;
+    const id = client['user']._id;
+
+    const { roomId } = data
+    console.log({roomId})
+
+    const roomName = "@room:" + roomId
+    client.join(roomName)
+    
+    client.to(roomName).emit('test', 'join oldunuz');
+  }
+
+  @UseGuards(WsGuard)
+  @SubscribeMessage('send_private_message')
+  sendPrivateMessage(client: Socket, data): void {
+    const username = client['user'].username;
+    const id = client['user']._id;
+
+    const { text, roomId, receiverId } = data
+    console.log({roomId})
+
+    const roomName = "@room:" + roomId
+    
+    this.server.to(roomName).emit('receive_private_message', {
       text: data.text,
       username,
       ownerId: id,
