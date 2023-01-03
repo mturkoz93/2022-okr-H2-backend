@@ -99,6 +99,7 @@ export class ChatGateway {
       username,
       _id: id,
       type: 'join',
+      roomId: "000111"
     });
   }
 
