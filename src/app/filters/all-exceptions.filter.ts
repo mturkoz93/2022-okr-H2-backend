@@ -76,7 +76,12 @@ function getErrorMessageText(errMessage, httpStatus, customMessage = '') {
   if(httpStatus === 500) {
     return customMessage || 'Sunucu hatası!'
   } else if(httpStatus === 401) {
-    return (customMessage || errMessage)
+    const message = customMessage || errMessage
+    if(message === "Unauthorized") {
+      return 'Yetkisiz erişim'
+    }
+
+    return message
   } else if(httpStatus === 404) {
     return (customMessage || errMessage)
   } else {
