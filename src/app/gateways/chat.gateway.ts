@@ -1,3 +1,4 @@
+import { RoomService } from './../modules/room/room.service';
 import { UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AuthGuard } from '@nestjs/passport';
@@ -16,6 +17,7 @@ import { User } from '../models/users.model';
 @WebSocketGateway(8081, { cors: '*' })
 export class ChatGateway {
   constructor(
+    private roomService: RoomService,
     @InjectModel('room') private readonly roomModel: Model<Room>,
     @InjectModel('user') private readonly userModel: Model<User>,
   ) {}
@@ -58,27 +60,47 @@ export class ChatGateway {
     const room = await this.roomModel
       .findOne({
         $or: [
-          { $and: [{ "messages.senderId": selectedUser._id }, { "messages.receiverId": id }] },
-          { $and: [{ "messages.senderId": id }, { "messages.receiverId": selectedUser._id }] },
+          {
+            $and: [
+              { 'messages.senderId': selectedUser._id },
+              { 'messages.receiverId': id },
+            ],
+          },
+          {
+            $and: [
+              { 'messages.senderId': id },
+              { 'messages.receiverId': selectedUser._id },
+            ],
+          },
         ],
       })
       .select('-createdAt -updatedAt -__v')
       .exec();
 
-    console.log('room', room)
 
-    if(!room) {
+    if (!room) {
       const room = await this.roomModel.create({
         type: 1,
-        messages: [{
-          text: `${username} sohbeti başlattı.`,
-          senderId: id,
-          receiverId: selectedUser._id,
-          status: 1
-        }],
+        messages: [
+          {
+            text: `${username} sohbeti başlattı.`,
+            senderId: id,
+            receiverId: selectedUser._id,
+            status: 1,
+          },
+        ],
         participants: [id, selectedUser._id],
         // receiverId: selectedUser._id
       });
+
+      const userRoomDetails = await this.roomService.getUserRoom(
+        selectedUser?._id,
+        room._id,
+      );
+
+
+      // diğer kullanıcıyı bilgilendir
+      this.server.emit(`new_request:${selectedUser?._id}`, userRoomDetails);
 
       return !!room ? room : false;
     }
@@ -99,7 +121,7 @@ export class ChatGateway {
       username,
       _id: id,
       type: 'join',
-      roomId: "000111"
+      roomId: '000111',
     });
   }
 
@@ -110,8 +132,7 @@ export class ChatGateway {
     const username = client['user'].username;
     const id = client['user']._id;
 
-    const { text, roomId, receiverId } = data
-    console.log({text, roomId, receiverId})
+    const { text, roomId, receiverId } = data;
 
     this.server.emit('received_message_from_general_chat', {
       text: data.text,
@@ -119,43 +140,58 @@ export class ChatGateway {
       ownerId: id,
       type: 'message',
       roomId,
-      receiverId
+      receiverId,
     });
   }
 
   @UseGuards(WsGuard)
   @SubscribeMessage('join_to_room')
   joinToRoom(client: Socket, data): void {
-    const username = client['user'].username;
-    const id = client['user']._id;
+    /* const username = client['user'].username;
+    const id = client['user']._id; */
 
-    const { roomId } = data
-    console.log({roomId})
+    const { roomId } = data;
 
-    const roomName = "@room:" + roomId
-    client.join(roomName)
-    
+    const roomName = '@room:' + roomId;
+    client.join(roomName);
+
     client.to(roomName).emit('test', 'join oldunuz');
   }
 
   @UseGuards(WsGuard)
   @SubscribeMessage('send_private_message')
-  sendPrivateMessage(client: Socket, data): void {
+  async sendPrivateMessage(client: Socket, data) {
     const username = client['user'].username;
     const id = client['user']._id;
 
-    const { text, roomId, receiverId } = data
-    console.log({roomId})
+    const { text, roomId, receiverId } = data;
+    console.log({ roomId });
 
-    const roomName = "@room:" + roomId
-    
+    // Yeni mesajı database'e ekler.
+    await this.roomModel.findOneAndUpdate(
+      { _id: roomId },
+      {
+        $push: {
+          messages: {
+            text: text,
+            senderId: id,
+            receiverId: receiverId,
+            status: 1,
+          },
+        },
+        $set:{ updatedAt: Date.now }
+      },
+      { new: true },
+    ).lean();
+
+    const roomName = '@room:' + roomId;
     this.server.to(roomName).emit('receive_private_message', {
-      text: data.text,
+      text: text,
       username,
       ownerId: id,
       type: 'message',
       roomId,
-      receiverId
+      receiverId,
     });
   }
 

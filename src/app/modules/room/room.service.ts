@@ -13,6 +13,7 @@ export class RoomService {
     const rooms = await this.roomModel.find({
       participants: { $in: userId }
     })
+    .sort({ updatedAt: -1 })
     .slice('messages', -1) // mesajların en sonuncusunu getirir
     .populate({ // participants içerisinde bulunan tags'lerin ilişkili olduğu tablodan bilgilerini alır
       path: 'participants',
@@ -31,5 +32,22 @@ export class RoomService {
         participantIds: room.participants.map(item => item._id)
       }
     }) */
+  }
+
+  async getUserRoom(userId: any, roomId: any) {
+    const room = await this.roomModel.findOne({
+      _id: roomId,
+      participants: { $in: userId }
+    })
+    .slice('messages', -1) // mesajların en sonuncusunu getirir
+    .populate({ // participants içerisinde bulunan tags'lerin ilişkili olduğu tablodan bilgilerini alır
+      path: 'participants',
+      populate: {
+        path: 'tags',
+        model: 'tag'
+      } 
+   }).populate("messages.receiverId").populate("messages.senderId").exec() as any;
+
+   return room
   }
 }
