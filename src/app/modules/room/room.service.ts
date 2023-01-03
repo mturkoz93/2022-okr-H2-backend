@@ -13,8 +13,8 @@ export class RoomService {
     return await this.roomModel.find({
       participants: { $in: userId }
     })
-    .slice('messages', -1)
-    .populate({ 
+    .slice('messages', -1) // mesajların en sonuncusunu getirir
+    .populate({ // participants içerisinde bulunan tags'lerin ilişkili olduğu tablodan bilgilerini alır
       path: 'participants',
       populate: {
         path: 'tags',
