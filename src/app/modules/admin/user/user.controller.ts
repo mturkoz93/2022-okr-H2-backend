@@ -4,7 +4,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/app/decorator/roles.decorator';
 import { Role } from 'src/app/common/enums/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Admin/User')
 @Controller('admin/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

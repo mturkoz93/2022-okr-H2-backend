@@ -25,3 +25,10 @@
 - npm i @ntegral/nestjs-sentry
 - npm i @sentry/minimal
 - npm i @sentry/types
+
+
+## Links
+### Swagger
+https://github.com/nestjs/swagger/issues/98
+
+### Mongoose

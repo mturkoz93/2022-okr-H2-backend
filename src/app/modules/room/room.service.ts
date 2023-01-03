@@ -10,7 +10,7 @@ export class RoomService {
   ) {}
 
   async getUserRooms(userId: any) {
-    return await this.roomModel.find({
+    const rooms = await this.roomModel.find({
       participants: { $in: userId }
     })
     .slice('messages', -1) // mesajların en sonuncusunu getirir
@@ -21,6 +21,8 @@ export class RoomService {
         model: 'tag'
       } 
    }).populate("messages.receiverId").populate("messages.senderId").exec() as any;
+
+   return rooms
 
     /* console.log(rooms)
     return rooms?.map((room: any) => {
