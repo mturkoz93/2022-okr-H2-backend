@@ -3,10 +3,13 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 // import { LoggingInterceptor } from 'src/app/interceptors/logging.interceptor';
 
 
 // @UseInterceptors(LoggingInterceptor)
+@ApiTags('User')
+@ApiBearerAuth('JWT')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

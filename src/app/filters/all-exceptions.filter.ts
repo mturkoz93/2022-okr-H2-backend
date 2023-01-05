@@ -26,7 +26,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         
       }
       
-      const errorMessage = httpStatus === 500 ? 'Sunucu hatası!' : (message || error)
+      const errorMessage = getErrorMessageText(error, httpStatus, message)
+
       // Log
       console.log(errorMessage)
 
@@ -44,7 +45,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         
       }
       
-      const errorMessage = httpStatus === 500 ? 'Sunucu hatası!' : err.message
+      const errorMessage = getErrorMessageText(err.message, httpStatus)
       // Log
       console.log(errorMessage)
 
@@ -69,4 +70,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
 function sendErrorToSentry(err) {
   Sentry.captureException(err);
+}
+
+function getErrorMessageText(errMessage, httpStatus, customMessage = '') {
+  if(httpStatus === 500) {
+    return customMessage || 'Sunucu hatası!'
+  } else if(httpStatus === 401) {
+    const message = customMessage || errMessage
+    if(message === "Unauthorized") {
+      return 'Yetkisiz erişim'
+    }
+
+    return message
+  } else if(httpStatus === 404) {
+    return (customMessage || errMessage)
+  } else {
+    return errMessage
+  }
 }

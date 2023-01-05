@@ -1,20 +1,55 @@
-import {ObjectID} from 'bson';
-import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {Types} from "mongoose";
+import { ObjectID } from 'bson';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { User } from './users.model';
+// import { Message } from './message.model';
 
-@Schema()
+export type RoomDocument = Room & Document;
+
+@Schema({ timestamps: true, collection: 'rooms' })
 export class Room {
   _id: ObjectID | string;
 
-  @Prop({required: true, maxlength: 20, minlength: 5})
-  name: string;
+  @Prop({ required: false })
+  name?: string;
 
-  @Prop()
+  /* @Prop({ type: Types.ObjectId, ref: 'user', required: true })
+  user_id!: User; */
+
+  @Prop({ required: true, default: 1 })
+  type!: number;
+
+  @Prop({ required: false, default: true })
+  status?: boolean;
+
+  @Prop({
+    type: [
+      {
+        _id: { type: Types.ObjectId },
+        text: { type: String },
+        senderId: { type: Types.ObjectId, ref: 'user', required: true },
+        receiverId: { type: Types.ObjectId, ref: 'user', required: true },
+        status: { type: Number },
+        createdAt: { type: Date, default: Date.now },
+        type: { type: String, default: 'message' },
+      },
+    ],
+  })
   messages: [];
 
-  @Prop({type: [{type: Types.ObjectId, ref: 'User'}]})
-  connectedUsers: User[];
+  /* @Prop({
+    type:[{ ref: 'message', required: true }]
+  })
+  messages: Message[]; */
+
+  @Prop({ type: [Types.ObjectId], ref: 'user' })
+  participants: User[];
+
+  /* @Prop({ type: Types.ObjectId, ref: 'user' })
+  receiverId: User; */
+
+  /* @Prop({ type: [Types.ObjectId], ref: 'tag' })
+  tags!: Tag[]; */
 }
 
-export const RoomSchema = SchemaFactory.createForClass(Room)
+export const RoomSchema = SchemaFactory.createForClass(Room);

@@ -52,7 +52,9 @@ async function bootstrap() {
     .setDescription('The 2022-okr-H2 API description')
     .setVersion('1.0')
     .addTag('2022-okr-H2')
-    .addBearerAuth()
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'JWT')
+    /* // XYZ alanı custom bir yer ve buradaki XYS ise controller'a eklenen yapı da şöyle olmalıdır => @ApiBearerAuth('XYZ')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'XYZ') */
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
