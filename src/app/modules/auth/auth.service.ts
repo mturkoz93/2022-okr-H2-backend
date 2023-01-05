@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LogoutAuthDto } from './dto/logout-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -22,16 +22,16 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.getUser({ username });
 
+    /* if (!user) {
+      throw new NotAcceptableException('could not find the user');
+    } */
     if (!user) {
-      throw new UnauthorizedException("Böyle bir kullanıcı bulunamadı!");
+      throw new NotFoundException("Böyle bir kullanıcı bulunamadı");
       // return null
     };
 
     const passwordValid = await bcrypt.compare(password, user.password);
 
-    if (!user) {
-      throw new NotAcceptableException('could not find the user');
-    }
 
     if (user && passwordValid) {
       return user;

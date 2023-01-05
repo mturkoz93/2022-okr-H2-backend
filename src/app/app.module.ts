@@ -1,3 +1,4 @@
+import { RoomService } from './modules/room/room.service';
 import { ChatGateway } from './gateways/chat.gateway';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from 'src/app/common/middleware/logger.middleware';
@@ -52,6 +53,7 @@ const SENTRY_DSN = "https://1ab0a5e19db64b02a66a929298bee953@o4504431183855616.i
   controllers: [AppController],
   providers: [
     AppService,
+    RoomService,
     ChatGateway,
     {
       provide: APP_FILTER,

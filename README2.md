@@ -25,3 +25,18 @@
 - npm i @ntegral/nestjs-sentry
 - npm i @sentry/minimal
 - npm i @sentry/types
+
+
+## Links
+### Swagger
+https://github.com/nestjs/swagger/issues/98
+
+### Mongoose
+https://stackoverflow.com/questions/32633561/cant-access-object-property-of-a-mongoose-response
+
+nest.js'de mongoose sorguları data'yı farklı bir obje
+yapısında dönüyor. eğer bu yapıyı düzgün bir şekilde
+görmek istersek sorgunun sonuna ".lean()" methodu eklenmeli ya da ".toObject()" eklenmelidir.
+
+- https://stackoverflow.com/questions/7267102/how-do-i-update-upsert-a-document-in-mongoose
+

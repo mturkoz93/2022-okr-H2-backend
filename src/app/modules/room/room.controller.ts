@@ -1,27 +1,37 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { Room } from '../../models/room.model';
-import {Model} from "mongoose";
+import { Body, Controller, Get, Param, Post, Request, Query, UseGuards } from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { RoomService } from './room.service';
 
+@ApiTags('Room')
+@ApiBearerAuth('JWT')
 @Controller('rooms')
 export class RoomController {
-  constructor(@InjectModel('room') private readonly model: Model<Room>) {} 
+  constructor(private readonly roomService: RoomService) {}
 
   @Get()
-  find(@Query('q') q) { 
-    if (q) return this.model.find({name: {$regex: new RegExp(`.*${q}.*`)}});
-    else return this.model.find();
+  @UseGuards(AuthGuard('jwt'))
+  getRooms(@Query('q') q) {
+    return []
+    // return this.roomService.getRooms()
   }
 
-  @Get('/:id')
-  findById(@Param('id') id: string) { 
-    return this.model.findById(id);
+  @Get(':roomId')
+  @UseGuards(AuthGuard('jwt'))
+  async getRoomDetail(@Query('q') q, @Param('roomId') roomId: string) {
+    return await this.roomService.getRoomDetail(roomId)
   }
 
-  @Post()
-  save(@Body() item: Room) { 
-    return item._id
-      ? this.model.findByIdAndUpdate(item._id, item, {new: true})
-      : this.model.create(item);
+  @Get('users/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getUserRooms(@Query('q') q, @Param('userId') userId: string) {
+    return await this.roomService.getUserRooms(userId)
+  }
+
+  @Get(':roomId/users/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getUserRoom(@Query('q') q, @Param('userId') userId: string, @Param('userId') roomId: string) {
+    return await this.roomService.getUserRoom(userId, roomId)
   }
 }
